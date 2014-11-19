@@ -7,14 +7,14 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "express": "~4.9.x"
+    "express": "~4.9.x",
+    "mongoskin" : "1.4.4", 
+    "async": "*",
+    "cheerio": "*", 
+    "request": "*"
   },
   "engines": {
     "node": "0.10.x"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/heroku/node-js-getting-started"
   },
   "keywords": [
     "node",
