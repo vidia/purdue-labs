@@ -1,10 +1,14 @@
 {
   "name": "purdue-labs",
-  "version": "0.0.0",
+  "version": "0.0.3",
   "private": true,
   "description" : "A simple Labs API to wrap the Purdue labs resources.", 
   "scripts": {
     "start": "./bin/www"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "2.1.x"
   },
   "dependencies": {
     "body-parser": "~1.10.2",
