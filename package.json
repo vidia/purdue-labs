@@ -4,7 +4,7 @@
   "private": true,
   "description" : "A simple Labs API to wrap the Purdue labs resources.", 
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "./bin/www"
   },
   "dependencies": {
     "body-parser": "~1.10.2",
