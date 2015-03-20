@@ -31,6 +31,7 @@ var getLabDetails = function(lab) {
 					} else if ($(element).text().indexOf("Computers") > -1) {
 						lab.computers = _getComputersEntries($, element);
 						logger.trace(lab); //is a div with spans inside. TODO: Take each span inside the thing and run a regex against it with captures.
+
 					}
 
 					// if($(element).text().indexOf("Information") == -1) {
@@ -48,24 +49,40 @@ var getLabDetails = function(lab) {
 // 	{ "pc" : { "available" : #, "total": # } }
 var _getComputersEntries = function($, element) { //TODO: Change this to passing cheerio or using cheerio obj
 
-	out = {};
+	out = [];
 	logger.debug($(element).parent().html());
-	$(element).parent().siblings().each(function(i, element) {
-		logger.trace("Hello world. Getting shit done!");
-		//logger.debug("Hello : " + $(element).html())
-		if($(element).is("span[site_md]")) {
+	$(element).parent().children().nextAll( function(i, element) {
+
+
+		logger.trace("Hello world. Getting shit done! | " + $(element).html() + " |\n" + $(element)[0].tagName);
+
+		if($(element).is("span")) {
 			logger.debug("World");
 
 			var raw = $(element).text();
-			var regex = /([0-9]+)\s+([A-Za-z]+)\s+\(([^\)]+)\)\s+\(([0-9]+).+\)/g;
+			var regex = /([0-9]+)\s+([A-Za-z]+)\s+\(([^\)]+)\)\s+\(([0-9]+).+\)/;
 
-			logger.debug("Raw : " + raw);
+			//logger.debug("Raw : " + raw);
 
-			var matches = raw.match(regex);
+			var matches = regex.exec(raw);
+			logger.debug(matches);
 
-			logger.debug(lab.name + " has " + matches[3] + "/" + matches[0] + matches[1]);
+			//logger.debug(lab.name + " has " + matches[3] + "/" + matches[0] + matches[1]);
 
-			out[matches[1]] = { "available": matches[3], "total" : matches[0] };
+			//out[matches[1]] = { "available": matches[3], "total" : matches[0] };
+
+			out.push(
+				{
+		      os: matches[3],
+		      description : matches[0],
+		      total : matches[1],
+		      available: matches[4]
+		    }
+			);
+
+		} else if ($(element).is("div"))
+		{
+			return false;
 		}
 	});
 	return out;
