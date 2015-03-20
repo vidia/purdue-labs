@@ -13,7 +13,7 @@ var labSchema = mongoose.Schema({
   classification : { type: String, enum: classifications },
   computers : [
     {
-      os: { type : String, enum : "pc mac linux".split(" ") },
+      os: String,
       description : String,
       total : Number,
       available: Number
