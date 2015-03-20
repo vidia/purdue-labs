@@ -2,7 +2,7 @@
   "name": "purdue-labs",
   "version": "0.0.3",
   "private": true,
-  "description" : "A simple Labs API to wrap the Purdue labs resources.", 
+  "description" : "A simple Labs API to wrap the Purdue labs resources.",
   "scripts": {
     "start": "./bin/www"
   },
@@ -19,10 +19,11 @@
     "morgan": "~1.5.1",
 
     "async": "*",
-    "cheerio": "*", 
-    "request": "*", 
-    "string-format" : "*", 
-    "log4js" : "*", 
-    "URIjs" : "*"
+    "cheerio": "*",
+    "request": "*",
+    "string-format" : "*",
+    "log4js" : "*",
+    "URIjs" : "*",
+    "mongoose": "*"
   }
 }

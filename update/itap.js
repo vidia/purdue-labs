@@ -4,6 +4,7 @@ var request = require("request");
 var format = require("string-format");
 var logger = require('log4js').getLogger();
 var URITemplate = require('URIjs/src/URITemplate');
+var Lab = require("../models/lab");
 
 var URLS = {
 			allLabsUrl : "https://lslab.ics.purdue.edu/icsWeb/LabSchedules",
@@ -14,7 +15,7 @@ var getAllLabs = function(callback) {
 	getLabNames();
 };
 
-var getLabDetails = function(lab) {
+var getLabDetails = function(lab, callback) {
 	var url = URLS.singleLabUrl.expand({ building: lab.building, room: lab.room} );
 	//logger.trace("Lab : " + lab["building"] + " " + lab["room"] + " | Requesting URL : " + url)
 	request(url,
@@ -38,6 +39,9 @@ var getLabDetails = function(lab) {
 					}
 				});
 			}
+
+		callback(lab); 
+
 		});
 };
 
@@ -180,7 +184,10 @@ var getLabNames = function(callback) {
 	});
 };
 
-module.exports = getAllLabs;
+module.exports = {
+	getAllLabs: getAllLabs,
+	getLab : getLabDetails
+};
 
 var other = {
 	getLabNames: getLabNames,
