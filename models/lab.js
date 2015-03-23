@@ -6,7 +6,7 @@ var classifications = "itap cs ecn tech".split(" ");
 
 // define the schema for our user model
 var labSchema = mongoose.Schema({
-  name: String,
+  name: { type: String, index: { unique: true } },
   building: String,
   room: String,
 

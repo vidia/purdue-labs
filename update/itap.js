@@ -11,16 +11,36 @@ var URLS = {
 			singleLabUrl : new URITemplate("https://lslab.ics.purdue.edu/icsWeb/LabInfo?building={building}&room={room}")
     };
 
-var getAllLabs = function(callback) {
-	getLabNames();
-};
+function getLabNames(callback) {
+	request(URLS.allLabsUrl, function(error, response, html) {
+		if (!error && response.statusCode == 200) {
+			var $ = cheerio.load(html);
+			var labs = [];
 
-var getLabDetails = function(lab, callback) {
+			$("select[name=labselect]").first().children().each( function(i, element) {
+
+
+				labs.push($(element).text());
+			});
+
+			if(callback) {
+				callback(labs);
+			}
+		}
+	});
+}
+
+function getLab(name, callback) {
+	var lab = {};
+	lab.name = name;
+	lab.building = name.split(" ")[0];
+	lab.room = name.split(" ")[1];
+
 	var url = URLS.singleLabUrl.expand({ building: lab.building, room: lab.room} );
 	//logger.trace("Lab : " + lab["building"] + " " + lab["room"] + " | Requesting URL : " + url)
 	request(url,
 		function(error, response, html) {
-			logger.trace("Got lab page : " + lab.name);
+			//logger.trace("Got lab page : " + lab.name);
 			if (!error && response.statusCode == 200) {
 				var $ = cheerio.load(html);
 				//logger.warn($("html").html())
@@ -35,29 +55,32 @@ var getLabDetails = function(lab, callback) {
 						lab.printers = _getPrintersEntries($, element);
 					} else if ($(element).text().indexOf("Scanners") > -1) {
 						lab.scanners = _getScannersEntries($, element);
-						logger.debug(lab);
+						//logger.debug(lab);
 					}
 				});
 			}
 
-		callback(lab); 
+			if(callback) {
+				callback(lab);
+			}
 
 		});
-};
+}
+
 
 var _getScannersEntries = function($, element) { //TODO: Find a more elegant way to deal with the cheerio object.
 	out = [];
-	logger.debug($(element).parent().html());
+	//logger.debug($(element).parent().html());
 	$(element).parent().children().nextAll( function(i, element) {
 
 		if($(element).is("span")) {
 
 			var raw = $(element).text();
-			logger.trace(raw);
+			//logger.trace(raw);
 			var regex = /([0-9]+)\s+([^(\n\t]+)\s+\(([0-9]+).+\)/;
 
 			var matches = regex.exec(raw);
-			logger.debug(matches);
+			//logger.debug(matches);
 
 			// Matches is an array in the form :
 			// (for the input: "1 black & white" )
@@ -149,50 +172,16 @@ var _getComputersEntries = function($, element) { //TODO: Find a more elegant wa
 		    }
 			);
 
-		} else if ($(element).is("div"))
-		{
+		} else if ($(element).is("div")) {
 			return false;
 		}
 	});
 	return out;
 };
 
-// Returns : [ { "name": , "building": , "room": }, ... ]
-var getLabNames = function(callback) {
-	request(URLS.allLabsUrl, function(error, response, html) {
-		if (!error && response.statusCode == 200) {
-			var $ = cheerio.load(html);
-			var labs = [];
-
-			$("select[name=labselect]").first().children().each( function(i, element) {
-				var lab = {};
-				lab.name = $(element).text();
-				lab.building = $(element).text().split(" ")[0];
-				lab.room = $(element).text().split(" ")[1];
-
-				process.nextTick( getLabDetails(lab, function(lab) {
-							var olab = new Lab(lab);
-							lab.save( function(err) {
-								if(err) {
-									logger.err(err);
-								}
-							});
-						})
-					);
-			});
-		}
-	});
-};
-
 module.exports = {
-	getAllLabs: getAllLabs,
-	getLab : getLabDetails
+	getLabNames : getLabNames,
+	getLab : getLab
 };
 
-var other = {
-	getLabNames: getLabNames,
-	getLabDetails: getLabDetails,
-	getAllLabs: getAllLabs
-};
-
-getLabDetails( { building : "BRES", room: "201" } );
+//getLabDetails( { building : "BRES", room: "201" } );
