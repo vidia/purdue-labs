@@ -51,7 +51,7 @@ function allNamesMiddleware(req, res, next) {
 //Attempts to pull lab from the db, otherwise pulls from HTTP
 function getLabDetails(name, callback) {
   logger.trace("Getting lab details for ("+name+")");
-  Lab.findOne({ name : name }, function(lab) {
+  Lab.findOne({ name : name }, function(err, lab) {
     if(lab) {
       logger.trace("Found lab ("+name+") in database");
       callback(lab);
